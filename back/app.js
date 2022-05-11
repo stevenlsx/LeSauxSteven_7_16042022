@@ -7,6 +7,7 @@ dotenv.config();
 
 const userRoutes = require("./routes/user");
 const postRoutes = require("./routes/post");
+const path = require("path");
 
 /*Middleware configurant les headers afin de contourner les erreurs bloquantes
 de la sécurité CORS pour que tout le monde puisse requêter depuis sa machine.*/
@@ -24,6 +25,8 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/user", userRoutes);
 
 app.use("/api/post", postRoutes);

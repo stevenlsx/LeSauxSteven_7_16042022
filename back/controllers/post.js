@@ -1,12 +1,16 @@
 const Post = require("../models/post");
+const fs = require("fs");
 
 exports.createPost = (req, res, next) => {
   const postModel = new Post();
-  console.log(postModel);
+  console.log(req.body.file);
+
+  const url = `${req.protocol}://${req.get("host")}/images/${
+    req.file.filename
+  }`;
   postModel
-    .create(req.body)
+    .createPost(req.body, url)
     .then((result) => {
-      console.log(result);
       res.status(201).json(result);
     })
     .catch((error) => {
@@ -41,7 +45,7 @@ exports.getAllPost = (req, res, next) => {
 
 exports.deletePost = (req, res, next) => {
   const postModel = new Post();
-  console.log(postModel);
+
   postModel
     .deletePost(req.params.id)
     .then((result) => {
@@ -52,4 +56,7 @@ exports.deletePost = (req, res, next) => {
       console.log(error);
       res.status(500).json(error);
     });
+};
+exports.updatePost = (req, res, next) => {
+  const postModel = new Post();
 };
