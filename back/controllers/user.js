@@ -1,7 +1,5 @@
 const User = require("../models/user");
 
-const db = require("../config/db");
-
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
@@ -20,7 +18,7 @@ exports.signup = (req, res, next) => {
           email: req.body.email,
           password: hash,
           role: req.body.role,
-          imgpath: req.body.imgpath,
+          img_url: req.body.img_url,
         })
         .then(() => res.status(201).json({ message: "Utilisateur créé" }))
         .catch((error) => res.status(400).json(error));
@@ -46,6 +44,10 @@ exports.login = async (req, res, next) => {
           }
           res.status(200).json({
             id: user.id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+            role: user.role,
             token: jwt.sign({ id: user.id }, process.env.TOKEN, {
               expiresIn: "24h",
             }),

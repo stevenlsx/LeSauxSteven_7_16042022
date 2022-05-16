@@ -8,10 +8,10 @@ class User {
         lastname,
         email,
         password,
-        imgpath
-      ) VALUES('${user.firstname}','${user.lastname}','${user.email}','${user.password}','${user.imgpath}')
+        img_url
+      ) VALUES('${user.firstname}','${user.lastname}','${user.email}','${user.password}','${user.img_url}')
       `;
-    console.log(sql);
+
     const [newUser] = await db.execute(sql);
 
     return newUser;

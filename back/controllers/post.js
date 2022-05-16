@@ -59,4 +59,21 @@ exports.deletePost = (req, res, next) => {
 };
 exports.updatePost = (req, res, next) => {
   const postModel = new Post();
+  const postReq = req.body;
+
+  postModel
+    .getOnePost(req.params.id)
+    .then((result) => {
+      postModel
+        .updatePost(postReq, result[0].id)
+        .then(() => {
+          res.status(200).json({ message: "post modifié" });
+        })
+        .catch((error) => {
+          res.status(500).json(error);
+        });
+    })
+    .catch((error) => {
+      res.status(500).json(error);
+    });
 };

@@ -30,9 +30,10 @@ class Post {
     const [newPost] = await db.execute(sql);
     return newPost;
   }
-  async updatePost(post) {
+  async updatePost(postReq, result) {
     let sql = `
-    UPDATE post SET content = '${post.content}', '${post.img_url}' WHERE id= '${post.id}';
+    UPDATE post SET content = '${postReq.content}', 
+    img_url = '${postReq.img_url}' WHERE id = '${result}'
     `;
     const [newPost] = await db.execute(sql);
     return newPost;
