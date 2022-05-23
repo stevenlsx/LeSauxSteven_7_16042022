@@ -1,0 +1,220 @@
+<template>
+<body>
+	<div class="formConnect">  	
+		<input type="checkbox" id="chk" aria-hidden="true">
+
+			<div class="login">
+				<form @submit.prevent="login">
+					<label for="chk" aria-hidden="true">Connexion</label>
+					
+					<input type="email" name="email" placeholder="Email" required v-model="userLogin.email" >
+					<input type="password" name="pswd" placeholder="Mot de passe" required v-model="userLogin.password">
+					<p v-show="errorData">Les données soumises sont incorrectes</p>
+					<button type="submit">Se connecter</button>
+				</form>
+			</div>
+
+			<div class="signup">
+				<form @submit.prevent="signup" >
+					<label for="chk" aria-hidden="true">Inscription</label>
+					<input type="text" name="firstname" placeholder="Prenom" required v-model="userSignup.firstname">
+						
+					<input type="text" name="lastname" placeholder="Nom" required v-model="userSignup.lastname">
+						
+					<input type="email" name="email" placeholder="Email" required v-model="userSignup.email" @change="isMailValid">
+						<p v-show="errorMail">Le mail n'est pas au format</p>
+					<input type="password" name="pswd" placeholder="Mot de passe" required v-model="userSignup.password" @change="isPswdValid">
+						
+					<!--<input type="checkbox" name="role" placeholder="Admin" required="">-->
+					<p v-show="errorPswd" >Le mot de passe est incorrect</p>
+					<button type="submit">S'inscrire</button>
+				</form>
+			</div>
+	</div>
+</body>
+
+</template>
+
+<script>
+import axios from "axios"
+export default {
+	name: "UserConnection",
+	data() {
+		return{
+			//Login
+			userLogin: {
+				email: null,
+				password: null
+			},
+			//Signup
+			userSignup: {
+				firstname: null,
+				lastname: null,
+				email: null,
+				password: null
+			},
+			errorData: false,
+			errorMail: false,
+			errorPswd: false,
+			mailIsValid: false,
+			pswdIsValid: false,
+		}
+	},
+	methods: {
+		login(){
+			
+			if(
+				this.userLogin.email !== null &&
+				this.userLogin.password !== null
+				){
+					axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*'
+					axios
+					.post("http://localhost:3000/api/user/login", this.userLogin)
+					.then((res) => {
+						console.log(res)
+					})
+					.catch((error) => console.log(error))
+			}  else {
+				this.errorData= true;
+			}  
+		},
+		signup(){
+			if(
+				(
+					this.userSignup.firstname !== null ||
+					this.userSignup.lastname !== null ||
+					this.userSignup.email !== null ||
+					this.userSignup.password !== null
+				)&&
+				(this.mailIsValid == true && this.pswdIsValid == true)
+			){
+					console.log(this.userSignup);
+					axios.post("http://localhost:3000/api/user/signup", this.userSignup)
+					.then((res) => console.log(res))
+					.catch((error) => console.log(error))
+			} else {
+				this.errorData = true;
+			}
+		},
+		isMailValid(){
+		
+			const regexEmail = /"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"/g;
+			if ((this.userSignup.email).match(regexEmail)){
+			
+				this.mailIsValid = true;
+			} else {
+				this.errorMail = true;
+				this.mailIsValid = false;
+			}
+		},
+		isPswdValid(){
+		
+			const regexPswd = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"/;
+			if ((this.userSignup.password).match(regexPswd)){
+					this.pswdIsValid = true;
+			} else {
+				this.errorPswd = true;
+				this.pswdIsValid = false;
+			}
+		}
+	}
+}
+</script>
+
+
+<style scoped lang="scss">
+body{
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	font-family: 'Jost', sans-serif;
+	background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+}
+.formConnect{
+	width: 350px;
+	height: 500px;
+	background: linear-gradient(to bottom, #1E1A42, #2F2A61, #1E1A42);
+	overflow: hidden;
+	border-radius: 10px;
+	box-shadow: 5px 20px 50px #000;
+	
+}
+#chk{
+	display: none;
+}
+.login{
+	position: relative;
+	width:100%;
+	height: 91%;
+}
+label{
+	color: #fff;
+	font-size: 2.3em;
+	justify-content: center;
+	display: flex;
+	margin: 60px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: .7s ease-in-out;
+}
+input{
+	width: 60%;
+	height: 20px;
+	background: #e0dede;
+	justify-content: center;
+	display: flex;
+	margin: 20px auto;
+	padding: 10px;
+	border: none;
+	outline: none;
+	border-radius: 5px;
+}
+.signup input{
+	margin-bottom: -9px;
+}
+button{
+	width: 60%;
+	height: 40px;
+	margin: 10px auto;
+	justify-content: center;
+	display: block;
+	color: #fff;
+	background: #573b8a;
+	font-size: 1em;
+	font-weight: bold;
+	margin-top: 20px;
+	outline: none;
+	border: none;
+	border-radius: 5px;
+	transition: .2s ease-in;
+	cursor: pointer;
+}
+button:hover{
+	background: #6d44b8;
+}
+.signup{
+	height: 460px;
+	background: #eee;
+	border-radius: 60% / 10%;
+	transform: translateY(-125px);
+	transition: .8s ease-in-out;
+	
+}
+.signup label{
+	color: #573b8a;
+	transform: scale(.6);
+}
+
+#chk:checked ~ .signup{
+	transform: translateY(-500px);
+}
+#chk:checked ~ .signup label{
+	transform: scale(1);	
+}
+#chk:checked ~ .login label{
+	transform: scale(.75) translateY(-39px);
+}
+</style>
