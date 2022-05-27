@@ -1,5 +1,5 @@
 <template>
-<body>
+<div class="connect_main">
 	<div class="formConnect">  	
 		<input type="checkbox" id="chk" aria-hidden="true">
 
@@ -28,10 +28,11 @@
 					<!--<input type="checkbox" name="role" placeholder="Admin" required="">-->
 					<p v-show="errorPswd" >Le mot de passe est incorrect</p>
 					<button type="submit">S'inscrire</button>
+					<p v-show="errorData">Les données soumises sont incorrectes</p>
 				</form>
 			</div>
 	</div>
-</body>
+</div>
 
 </template>
 
@@ -70,11 +71,10 @@ export default {
 					axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*'
 					axios
 					.post("http://localhost:3000/api/user/login", this.userLogin)
-					.then((res) => {
-						console.log(res)
-					})
-					.catch((error) => console.log(error))
-			}  else {
+					.then(() => { 
+						this.$router.push("/Home")
+					})	
+			}else {
 				this.errorData= true;
 			}  
 		},
@@ -83,12 +83,12 @@ export default {
 				(
 					this.userSignup.firstname !== null ||
 					this.userSignup.lastname !== null ||
-					this.userSignup.email !== null ||
+					this.userSignup.email !== null &&
 					this.userSignup.password !== null
 				)&&
 				(this.mailIsValid == true && this.pswdIsValid == true)
 			){
-					console.log(this.userSignup);
+
 					axios.post("http://localhost:3000/api/user/signup", this.userSignup)
 					.then((res) => console.log(res))
 					.catch((error) => console.log(error))
@@ -98,7 +98,7 @@ export default {
 		},
 		isMailValid(){
 		
-			const regexEmail = /"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"/g;
+			const regexEmail = /^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/;
 			if ((this.userSignup.email).match(regexEmail)){
 			
 				this.mailIsValid = true;
@@ -109,7 +109,7 @@ export default {
 		},
 		isPswdValid(){
 		
-			const regexPswd = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"/;
+			const regexPswd = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$/;
 			if ((this.userSignup.password).match(regexPswd)){
 					this.pswdIsValid = true;
 			} else {
@@ -122,8 +122,8 @@ export default {
 </script>
 
 
-<style scoped lang="scss">
-body{
+<style scoped>
+.connect_main{
 	margin: 0;
 	padding: 0;
 	display: flex;
