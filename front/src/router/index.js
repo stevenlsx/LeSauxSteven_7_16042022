@@ -13,6 +13,7 @@ const routes = [
     name: "Home",
     component: Home,
   },
+
   {
     path: "/MyPost",
     name: "MyPost",

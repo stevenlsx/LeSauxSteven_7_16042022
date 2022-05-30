@@ -1,84 +1,89 @@
 <template>
 
-    <body>
+    <form class="post">
+        <div class="user__card">
+            <img src="user__card_img" alt="photo de profil" />
+            <p class="user__card_first"> {{ firstname }}</p>
+            <p class="user__card_last">{{ lastname }}</p>
+        </div>
+        <div class="post__content">
 
-        <header>
-            <img class="header__logo" src="../assets/logo_accueil.png" alt="Logo Groupomania">
-            <nav class="header__nav">
-                <ul class="routing__list">
-                    <li>
-                        <router-link to="/Home">Accueil</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/MyPost">Mes posts</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/MyComment">Mes commentaires</router-link>
-                    </li>
-                </ul>
-            </nav>
-        </header>
-
-        <section>
-            <PostModel />
-
-
-            <form class="comments">
-                <div class="user__card">
-                    <img src="user__card_img" alt="photo de profil" />
-                    <p class="user__card_first"> firstname</p>
-                    <p class="user__card_last">lastname</p>
-                </div>
-                <div class="comment__content">
-                    <textarea class="comment__textarea" name="textarea" placeholder="Votre réponse..." cols="70"
-                        rows="6"></textarea>
-                    <label for="addImg">Ajoutez une image ou un gif !</label>
-                    <input type="image" id="addImg" alt="illustration du comment" src="">
-                    <button class="btn__submit" type="submit"> Répondre !</button>
-                </div>
-                <div class="btn__option">
-                    <button type="submit" class="btn__modif">Modifier le post</button>
-                    <button type="submit" class="btn__showcomments">Afficher les réponses</button>
-                    <button type="submit" class="btn__del">Supprimer le post</button>
-                </div>
-            </form>
-        </section>
-        <footer>
-            <ul>
-                <li><button>Ajouter photo de profil</button></li>
-                <li><button>Se déconnecter</button></li>
-                <li><button>Supprimer mon compte</button></li>
-            </ul>
-        </footer>
-
-
-
-    </body>
+            <textarea class="post__content_textarea" name="textarea" placeholder="Partagez quelque chose !" cols="100"
+                rows="10" v-model="content"></textarea>
+            <label for="addImg">Ajoutez une image ou un gif !</label>
+            <input type="image" id="addImg" alt="illustration du post" src="{{img_url}}">
+            <button class="btn__submit" type="submit"> Partagez !</button>
+        </div>
+        <div class="btn__option">
+            <button type="submit" class="btn__modif">Modifier le post</button>
+            <button type="submit" class="btn__showcomments">Afficher les réponses</button>
+            <button type="submit" class="btn__del">Supprimer le post</button>
+        </div>
+    </form>
 </template>
-
 
 <script>
 
-import PostModel from "../components/PostModel.vue"
-
+import axios from "axios"
 export default {
-    name: "Home",
-    components: {
-        PostModel
-    },
+    name: "PostModel",
     data() {
         return {
+            postData: {
+                id: null,
+                firstname: null,
+                lastname: null,
+                img: null,
+                user_id: null,
+                content: null,
+                img_url: null,
+                date: null
+            },
 
+            allUser: [],
+            allPost: [],
+            arrayPostData: []
         }
     },
-    mixins: [PostModel],
-    created() {
-        this.getAllUser(),
-            this.getAllPost(),
-            this.newPostData()
-    },
 
+    methods: {
+        getAllUser() {
+            axios.get("http://localhost:3000/api/user/")
+                .then((res) => console.log(res))
+                .then((data) => this.allUser = data,
+                    console.log(this.allUser))
+        },
+        getAllPost() {
+            axios.get("http://localhost:3000/api/post/")
+                .then((res) => console.log(res))
+                .then((data) => this.allPost = data,
+                    console.log(this.allPost))
+        },
+        newPostData() {
+            for (let i = 0; i < this.allPost.length; i++) {
+                for (let j = 0; j < this.allUser.length; j++) {
+                    if (this.allPost[i].user_id === this.allUser[j].id) {
+                        this.postData.firstname = this.allUser[j].firstname;
+                        this.postData.lastname = this.allUser[j].lastname;
+                        this.postData.img = this.allUser[j].img_url;
+                        this.postData.user_id = this.allPost[i].user_id;
+                        this.postData.content = this.allPost[i].content;
+                        this.postData.img_url = this.allPost[i].img_url;
+                        this.postData.date = this.allPost[i].date;
+                        this.arrayPostData.push(this.postData);
+                        console.log(this.arrayPostData);
+                    }
+                }
+            }
+        },
+        emitArray() {
+            this.$emit(this.arrayPostData);
+        }
+
+    }
 }
+
+
 </script>
 
 <style scoped lang="scss">

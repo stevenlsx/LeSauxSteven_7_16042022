@@ -57,3 +57,15 @@ exports.login = async (req, res, next) => {
     })
     .catch((error) => res.status(500).json({ error }));
 };
+exports.getAllUser = (req, res, next) => {
+  const userModel = new User();
+  userModel
+    .getAllUser()
+    .then((result) => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+    .catch((error) => {
+      res.status(500).json(error);
+    });
+};

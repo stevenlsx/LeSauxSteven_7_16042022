@@ -23,5 +23,12 @@ class User {
     const [user] = await db.execute(sql);
     return user;
   }
+  async getAllUser(user) {
+    let sql = `
+    SELECT * FROM user
+    `;
+    const [newUser] = await db.execute(sql);
+    return newUser;
+  }
 }
 module.exports = User;
