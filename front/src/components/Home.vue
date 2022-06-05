@@ -1,283 +1,52 @@
 <template>
 
     <body>
-
-        <header>
-            <img class="header__logo" src="../assets/logo_accueil.png" alt="Logo Groupomania">
-            <nav class="header__nav">
-                <ul class="routing__list">
-                    <li>
-                        <router-link to="/Home">Accueil</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/MyPost">Mes posts</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/MyComment">Mes commentaires</router-link>
-                    </li>
-                </ul>
-            </nav>
-        </header>
-
+        <Header />
         <section>
-            <PostModel />
+            <PostModel v-for="post in allPost" :key="post.id" :post="post">
+            </PostModel>
 
-
-            <form class="comments">
-                <div class="user__card">
-                    <img src="user__card_img" alt="photo de profil" />
-                    <p class="user__card_first"> firstname</p>
-                    <p class="user__card_last">lastname</p>
-                </div>
-                <div class="comment__content">
-                    <textarea class="comment__textarea" name="textarea" placeholder="Votre réponse..." cols="70"
-                        rows="6"></textarea>
-                    <label for="addImg">Ajoutez une image ou un gif !</label>
-                    <input type="image" id="addImg" alt="illustration du comment" src="">
-                    <button class="btn__submit" type="submit"> Répondre !</button>
-                </div>
-                <div class="btn__option">
-                    <button type="submit" class="btn__modif">Modifier le post</button>
-                    <button type="submit" class="btn__showcomments">Afficher les réponses</button>
-                    <button type="submit" class="btn__del">Supprimer le post</button>
-                </div>
-            </form>
         </section>
-        <footer>
-            <ul>
-                <li><button>Ajouter photo de profil</button></li>
-                <li><button>Se déconnecter</button></li>
-                <li><button>Supprimer mon compte</button></li>
-            </ul>
-        </footer>
-
-
-
+        <Footer />
     </body>
 </template>
 
 
 <script>
-
+import Header from "../components/Header.vue"
+import Footer from '../components/Footer.vue'
 import PostModel from "../components/PostModel.vue"
+
+import axios from "axios"
 
 export default {
     name: "Home",
     components: {
-        PostModel
+        Header,
+        Footer,
+        PostModel,
     },
     data() {
         return {
-
+            allPost: []
         }
-    },
-    mixins: [PostModel],
-    created() {
-        this.getAllUser(),
-            this.getAllPost(),
-            this.newPostData()
-    },
 
+    },
+    methods: {
+        getAllPost() {
+            axios.get("http://localhost:3000/api/post/")
+                .then((res) => {
+                    this.allPost = res.data
+                }).catch((error) => console.log(error))
+        },
+
+
+    },
+    mounted() {
+        this.getAllPost();
+    },
 }
 </script>
 
 <style scoped lang="scss">
-body {
-    text-align: center;
-    font-family: 'Jost', sans-serif;
-    background: rgb(0, 71, 144);
-    background: linear-gradient(0deg, rgba(26, 51, 168, 1) 0%, rgba(16, 116, 205, 1) 12%, rgba(163, 56, 255, 1) 49%, rgba(16, 116, 205, 1) 76%, rgba(26, 51, 168, 1) 94%) no-repeat;
-}
-
-/* Header */
-
-header {
-    display: grid;
-    align-items: center;
-    margin: 0 auto;
-    grid-template-columns: 1fr 1fr 2fr;
-    grid-template-areas: "logo . navbar ";
-}
-
-.header__logo {
-    grid-area: logo;
-    height: 300px;
-    margin: -47px -40px 0px 58px;
-}
-
-.header__nav {
-    grid-area: navbar;
-    margin-top: -37px;
-}
-
-.routing__list {
-    display: flex;
-    justify-content: flex-start;
-    gap: 8%;
-    list-style: none;
-
-    li {
-        border-right: 1px white solid;
-        line-height: 26px;
-        padding-right: 28px;
-    }
-
-}
-
-a {
-    text-decoration: none;
-    color: white;
-}
-
-.router-link-active {
-
-    font-weight: bold;
-    color: white;
-    background-color: #a338ff;
-    border: 2px solid #a338ff;
-    padding: 3px;
-    border-radius: 5px;
-    box-shadow: 4px 5px 12px rgb(18, 24, 117);
-
-    &:hover {
-        background-color: rgb(2, 227, 247);
-        border: 2px solid rgb(2, 227, 247);
-    }
-}
-
-// THREAD DES POSTES //
-.post {
-    border: 1px #6d44b8 solid;
-    background-color: lightgray;
-    text-align: center;
-    width: 70%;
-    margin-left: 15%;
-    border-radius: 5px 5px 0 0;
-    box-shadow: 5px 20px 50px rgb(18, 24, 117);
-}
-
-.user__card {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 20px;
-    padding-left: 20px;
-}
-
-.user__card_img {
-    padding-left: 20px;
-}
-
-.post__content {
-    display: flex;
-    flex-direction: column;
-}
-
-.btn__submit {
-    width: 25%;
-    margin: 10px auto;
-    padding: 10px 0;
-    justify-content: center;
-    display: block;
-    color: #fff;
-    background: #a338ff;
-    font-size: 1em;
-    font-weight: bold;
-    margin-top: 20px;
-    outline: none;
-    border: none;
-    border-radius: 0 0 5px 5px;
-    transition: .2s ease-in;
-    cursor: pointer;
-
-    &:hover {
-        background: rgb(2, 227, 247);
-        ;
-    }
-}
-
-
-.btn__option {
-    display: flex;
-    margin-bottom: -10px;
-
-    button {
-        width: 25%;
-        margin: 10px auto;
-        justify-content: center;
-        display: block;
-        color: #fff;
-        background: #a338ff;
-        font-size: 1em;
-        font-weight: bold;
-        margin-top: 20px;
-        outline: none;
-        border: none;
-        border-radius: 5px 5px 0 0;
-        transition: .2s ease-in;
-        cursor: pointer;
-
-        &:hover {
-            background: rgb(2, 227, 247);
-        }
-    }
-}
-
-//THREAD DES COMMENT//
-.comments {
-    border: 1px #6d44b8 solid;
-    background-color: rgba(211, 211, 211, 0.526);
-    text-align: center;
-    width: 70%;
-    margin-left: 15%;
-    border-radius: 0 0 5px 5px;
-    box-shadow: 5px 20px 50px rgb(18, 24, 117);
-}
-
-.comment__content {
-    display: flex;
-    flex-direction: column;
-}
-
-//FOOTER//
-footer {
-
-    padding: 100px 34px 50px 0;
-    color: white;
-}
-
-footer ul {
-
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    text-align: center;
-    list-style: none;
-
-    button {
-        width: 50%;
-        font-size: 1em;
-        background-color: #a338ff;
-        color: white;
-        border: 1px solid #a338ff;
-        border-radius: 5px;
-        box-shadow: 4px 5px 12px rgb(18, 24, 117);
-
-        &:hover {
-            background-color: rgb(2, 227, 247);
-
-        }
-    }
-
-    li {
-        display: flex;
-        justify-content: space-around;
-        border-right: 2px solid goldenrod;
-
-        &:last-child {
-            border: none;
-        }
-    }
-
-}
 </style>

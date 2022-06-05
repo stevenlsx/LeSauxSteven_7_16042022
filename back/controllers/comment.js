@@ -14,10 +14,10 @@ exports.createComment = (req, res, next) => {
     });
 };
 
-exports.getOneComment = (req, res, next) => {
+exports.getComment = (req, res, next) => {
   const commentModel = new Comment();
   commentModel
-    .getOneComment(req.params.id)
+    .getComment(req.params.id)
     .then((result) => {
       console.log(result);
       res.status(200).json(result);

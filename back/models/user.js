@@ -30,5 +30,19 @@ class User {
     const [newUser] = await db.execute(sql);
     return newUser;
   }
+  async getUser(id) {
+    let sql = `
+    SELECT * FROM user WHERE id ='${id}'
+    `;
+    const [user] = await db.execute(sql);
+    return user;
+  }
+  async deleteUser(id) {
+    let sql = `
+    DELETE FROM user WHERE id ='${id}'
+    `;
+    const [user] = await db.execute(sql);
+    return user;
+  }
 }
 module.exports = User;

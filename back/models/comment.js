@@ -9,9 +9,9 @@ class Comment {
     const [newComment] = await db.execute(sql);
     return newComment;
   }
-  async getOneComment(comment) {
+  async getComment(id) {
     let sql = `
-    SELECT * FROM comment WHERE id='${comment}'
+    SELECT * FROM comment WHERE post_id='${id}'
     `;
     const [newComment] = await db.execute(sql);
     return newComment;

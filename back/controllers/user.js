@@ -43,11 +43,13 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({ error: "Mot de passe incorrect !" });
           }
           res.status(200).json({
-            id: user.id,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            email: user.email,
-            role: user.role,
+            user: {
+              id: user.id,
+              firstname: user.firstname,
+              lastname: user.lastname,
+              email: user.email,
+              role: user.role,
+            },
             token: jwt.sign({ id: user.id }, process.env.TOKEN, {
               expiresIn: "24h",
             }),
@@ -61,11 +63,29 @@ exports.getAllUser = (req, res, next) => {
   const userModel = new User();
   userModel
     .getAllUser()
-    .then((result) => {
+    .then((res) => {
       console.log(result);
       res.status(200).json(result);
     })
     .catch((error) => {
       res.status(500).json(error);
     });
+};
+exports.getUser = (req, res, next) => {
+  const userModel = new User();
+  userModel
+    .getUser(req.params.id)
+    .then((result) => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+    .catch((error) => res.status(500).json({ error }));
+};
+
+exports.deleteUser = (req, res, next) => {
+  const userModel = new User();
+  userModel
+    .deleteUser(req.params.id)
+    .then((result) => res.status(200).json(result))
+    .catch((error) => res.status(500).json(error));
 };
