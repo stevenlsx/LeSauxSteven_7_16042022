@@ -19,7 +19,6 @@ exports.getComment = (req, res, next) => {
   commentModel
     .getComment(req.params.id)
     .then((result) => {
-      console.log(result);
       res.status(200).json(result);
     })
     .catch((error) => {
@@ -33,7 +32,6 @@ exports.getAllComment = (req, res, next) => {
   commentModel
     .getAllComment()
     .then((result) => {
-      console.log(result);
       res.status(200).json(result);
     })
     .catch((error) => {
@@ -47,7 +45,6 @@ exports.deleteComment = (req, res, next) => {
   commentModel
     .deleteComment(req.params.id)
     .then((result) => {
-      console.log(result);
       res.status(200).json(result);
     })
     .catch((error) => {

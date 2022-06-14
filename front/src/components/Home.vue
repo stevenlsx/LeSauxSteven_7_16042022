@@ -28,22 +28,24 @@ export default {
     },
     data() {
         return {
-            allPost: []
+            allPost: [],
+
         }
 
     },
     methods: {
+
         getAllPost() {
             axios.get("http://localhost:3000/api/post/")
                 .then((res) => {
                     this.allPost = res.data
                 }).catch((error) => console.log(error))
         },
-
-
     },
     mounted() {
-        this.getAllPost();
+
+        this.getAllPost()
+
     },
 }
 </script>

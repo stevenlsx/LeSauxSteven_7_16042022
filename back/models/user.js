@@ -35,6 +35,7 @@ class User {
     SELECT * FROM user WHERE id ='${id}'
     `;
     const [user] = await db.execute(sql);
+
     return user;
   }
   async deleteUser(id) {

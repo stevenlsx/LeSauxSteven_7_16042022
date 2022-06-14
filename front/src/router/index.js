@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import UserConnect from "@/components/UserConnect";
 import Home from "@/components/Home.vue";
+import MyPost from "@/components/MyPost";
 
 const routes = [
   {
@@ -17,7 +18,7 @@ const routes = [
   {
     path: "/MyPost",
     name: "MyPost",
-    component: Home,
+    component: MyPost,
   },
 ];
 

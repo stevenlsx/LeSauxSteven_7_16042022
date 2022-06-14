@@ -9,9 +9,6 @@
                 <li>
                     <router-link to="/MyPost">Mes posts</router-link>
                 </li>
-                <li>
-                    <router-link to="/MyComment">Mes commentaires</router-link>
-                </li>
             </ul>
         </nav>
     </header>

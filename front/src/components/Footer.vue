@@ -1,34 +1,26 @@
 <template>
     <footer>
         <ul>
-            <li><button>Ajouter photo de profil</button></li>
             <li><button>Se déconnecter</button></li>
-            <li><button type="click" @submit="deleteUser">Supprimer mon compte</button></li>
+            <li><button @click="deleteUser">Supprimer mon compte</button></li>
         </ul>
     </footer>
 </template>
 
 <script>
-//import { mapState } from 'vuex'
+
 import axios from "axios"
 import router from "@/router/"
 export default {
     name: "Footer",
-    //data() {
-    //    return {
-    //        id: this.userCoId
-    //    }
-    //},
-    //computed: {
-    //    ...mapState(["userCoToken", "userCoId"])
-    //},
+
     methods: {
 
         deleteUser() {
-            axios.delete(`http://localhost:3000/api/user/${this.$store.state.userCoId}`)
+            axios.delete(`http://localhost:3000/api/user/${this.$store.state.user}`)
                 .then(() => {
                     router.push("/")
-                    console.log("deleted af");
+                    console.log("deleted");
                 })
                 .catch((error) => console.log(error))
         },

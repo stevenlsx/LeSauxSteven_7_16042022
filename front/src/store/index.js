@@ -4,16 +4,18 @@ import router from "@/router/";
 
 export default createStore({
   state: {
-    userCoData: {},
-    userCoToken: null,
-    userCoId: null,
+    user: null,
+    token: null,
   },
   mutations: {
+    /**
+     *
+     * @param {Object} state
+     * @param {Object} data
+     */
     userData(state, data) {
-      state.userCoData = data;
-      state.userCoToken = state.userCoData.token;
-      state.userCoId = state.userCoData.user.id;
-      console.log(state.userCoId);
+      state.user = data.user;
+      state.token = data.token;
     },
   },
   actions: {
@@ -21,8 +23,12 @@ export default createStore({
       axios
         .post("http://localhost:3000/api/user/login", payload)
         .then((res) => {
-          router.push("/Home");
+          axios.defaults.headers.common[
+            "Authorization"
+          ] = `bearer ${res.data.token}`;
+          localStorage.token = res.data.token;
           context.commit("userData", res.data);
+          router.push("/Home");
         })
         .catch((error) => console.log(error));
     },

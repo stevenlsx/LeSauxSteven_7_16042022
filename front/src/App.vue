@@ -2,16 +2,39 @@
   <div id="id">
 
   </div>
-  <router-view></router-view>
+  <h2 v-if="loading">Chargement...</h2>
+  <router-view v-else></router-view>
 </template>
 
 <script>
+
+import axios from "axios"
 
 
 export default {
   name: 'App',
   components: {
 
+  },
+  data() {
+    return {
+      loading: true
+    }
+  },
+  mounted() {
+    if (localStorage.token) {
+      axios.defaults.headers.common["Authorization"] = `bearer ${localStorage.token}`;
+      axios.get("http://localhost:3000/api/user/me")
+        .then((res) => {
+          this.$store.commit("userData", {
+            user: res.data.user,
+            token: localStorage.token
+          })
+          this.loading = false
+        })
+        .catch((error) => console.log(error))
+    }
+    else { this.loading = false }
   }
 }
 </script>

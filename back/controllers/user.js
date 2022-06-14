@@ -9,7 +9,6 @@ exports.signup = (req, res, next) => {
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
-      console.log(hash);
       const user = new User();
       user
         .save({
@@ -64,7 +63,6 @@ exports.getAllUser = (req, res, next) => {
   userModel
     .getAllUser()
     .then((res) => {
-      console.log(result);
       res.status(200).json(result);
     })
     .catch((error) => {
@@ -76,7 +74,6 @@ exports.getUser = (req, res, next) => {
   userModel
     .getUser(req.params.id)
     .then((result) => {
-      console.log(result);
       res.status(200).json(result);
     })
     .catch((error) => res.status(500).json({ error }));
@@ -87,5 +84,15 @@ exports.deleteUser = (req, res, next) => {
   userModel
     .deleteUser(req.params.id)
     .then((result) => res.status(200).json(result))
+    .catch((error) => res.status(500).json(error));
+};
+exports.me = (req, res, next) => {
+  const userModel = new User();
+  userModel
+    .getUser(req.auth)
+    .then((result) => {
+      delete result[0].password;
+      res.status(200).json({ user: result[0] });
+    })
     .catch((error) => res.status(500).json(error));
 };

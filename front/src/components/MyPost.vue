@@ -2,170 +2,134 @@
 
     <body>
 
-        <header>
-            <img class="header__logo" src="../assets/logo_accueil.png" alt="Logo Groupomania">
-            <nav class="header__nav">
-                <ul class="routing__list">
-                    <li>
-                        <router-link to="/Home">Accueil</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/MyPost">Mes posts</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/MyComment">Mes commentaires</router-link>
-                    </li>
-                </ul>
-            </nav>
-        </header>
-
+        <Header />
         <section>
-            <form class="post">
+            <form class="post" @submit.prevent="createPost">
                 <div class="user__card">
-                    <img src="user__card_img" alt="photo de profil" />
-                    <p class="user__card_first"> firstname</p>
-                    <p class="user__card_last">lastname</p>
+                    <p class="user__card_first"> {{ this.user.firstname }}</p>
+                    <p class="user__card_last">{{ this.user.lastname }}</p>
                 </div>
                 <div class="post__content">
-
-                    <textarea class="post__content_textarea" name="textarea" placeholder="Partagez quelque chose !"
-                        cols="100" rows="10"></textarea>
+                    <textarea class="content" name="textarea" placeholder="Partagez quelque chose !" rows="10"
+                        v-model="dataPost.content"></textarea>
                     <label for="addImg">Ajoutez une image ou un gif !</label>
-                    <input type="image" id="addImg" alt="illustration du post" src="">
-                    <button class="btn__submit" type="submit"> Partagez !</button>
+                    <input type="file" id="addImg" alt="illustration du post" @change="uploadFile">
+                    <button class="btn__addImg" type="click"> Ajoutez </button>
                 </div>
-                <div class="btn__option">
-                    <button type="submit" class="btn__modif">Modifier le post</button>
-                    <button type="submit" class="btn__showcomments">Afficher les réponses</button>
-                    <button type="submit" class="btn__del">Supprimer le post</button>
+                <div class="post__option">
+
+                    <button type="submit" class="btn__showcomments">Partagez !</button>
+
                 </div>
             </form>
-
-
-            <form class="comments">
-                <div class="user__card">
-                    <img src="user__card_img" alt="photo de profil" />
-                    <p class="user__card_first"> firstname</p>
-                    <p class="user__card_last">lastname</p>
-                </div>
-                <div class="comment__content">
-                    <textarea class="comment__textarea" name="textarea" placeholder="Votre réponse..." cols="70"
-                        rows="6"></textarea>
-                    <label for="addImg">Ajoutez une image ou un gif !</label>
-                    <input type="image" id="addImg" alt="illustration du comment" src="">
-                    <button class="btn__submit" type="submit"> Répondre !</button>
-                </div>
-                <div class="btn__option">
-                    <button type="submit" class="btn__modif">Modifier le post</button>
-                    <button type="submit" class="btn__showcomments">Afficher les réponses</button>
-                    <button type="submit" class="btn__del">Supprimer le post</button>
-                </div>
-            </form>
+            <PostModel v-for="post in myPost" :key="post.id" :post="post" :myArrayComment="myArrayComment" :Btn="Btn"
+                :regular="regular" :shrink="shrink">
+            </PostModel>
         </section>
-        <footer>
-            <ul>
-                <li><button>Ajouter photo de profil</button></li>
-                <li><button>Se déconnecter</button></li>
-                <li><button>Supprimer mon compte</button></li>
-            </ul>
-        </footer>
-
-
-
+        <Footer />
     </body>
 </template>
 
 
 <script>
+import Header from "../components/Header.vue"
+import Footer from '../components/Footer.vue'
+import PostModel from "../components/PostModel.vue"
+import axios from "axios"
 
 export default {
-    name: "Home",
+    name: "MyPost",
+    components: {
+        Header,
+        Footer,
+        PostModel,
+    },
     data() {
-        return {}
+        return {
+            Btn: true,
+            regular: false,
+            shrink: true,
+            myPost: [],
+            myArrayComment: [],
+            dataPost: {
+                id: null,
+                content: null,
+                img_url: null,
+                user_id: null
+            },
+            showComment: false,
+            file: null,
+        }
+    },
+    computed: {
+        user() {
+            return this.$store.state.user
+        }
+    },
+    methods: {
+        uploadFile(e) {
+            this.file = e.target.files[0]
+        },
+        createPost() {
+            let formData = new FormData();
+            formData.append('image', this.file)
+            formData.append('post', JSON.stringify({
+                user_id: this.user.id,
+                content: this.dataPost.content
+            }))
+            axios.post("http://localhost:3000/api/post/", formData)
+                .then((res) => {
+                    this.myPost.push(res.data)
+                    console.log(res)
+                })
+                .catch((error) => console.log(error))
+        },
+        getMyPost() {
+            axios.get(`http://localhost:3000/api/post/mypost/${this.user.id}`)
+                .then((res) => {
+                    this.myPost = res.data
+                    this.dataPost.user_id = this.user.id
+                    this.dataPost.id = res.data.id
+                    console.log(res.data);
+                })
+                .catch((error) => console.log(error))
+        },
+        getComment() {
+            axios.get(`http://localhost:3000/api/comment/${this.dataPost.id}`)
+                .then((res) => {
+                    this.myArrayComment = res.data
+                }).catch((error) => console.log(error))
+        }
+    },
+    mounted() {
+        this.getMyPost();
+
     }
 }
 </script>
 
 <style scoped lang="scss">
-body {
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    font-family: 'Jost', sans-serif;
-    background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e) no-repeat;
-}
-
-/* Header */
-
-header {
-    display: grid;
-    align-items: center;
-    margin: 0 auto;
-    grid-template-columns: 1fr 1fr 2fr;
-    grid-template-areas: "logo . navbar ";
-}
-
-.header__logo {
-    grid-area: logo;
-    height: 300px;
-    margin: -47px -40px 0px 58px;
-}
-
-.header__nav {
-    grid-area: navbar;
-    margin-top: -37px;
-}
-
-.routing__list {
-    display: flex;
-    justify-content: flex-start;
-    gap: 8%;
-    list-style: none;
-
-    li {
-        border-right: 1px white solid;
-        line-height: 26px;
-        padding-right: 28px;
-    }
-
-}
-
-
-
-a {
-    text-decoration: none;
-    color: white;
-}
-
-.router-link-active {
-
-    font-weight: bold;
-    color: white;
-    background-color: gold;
-    border: 2px solid gold;
-    padding: 3px;
-    border-radius: 5px;
-    box-shadow: 4px 5px 12px #000;
-}
-
-// THREAD DES POSTES //
 .post {
-    border: 1px #6d44b8 solid;
-    background-color: lightgray;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: rgb(216, 205, 228);
     text-align: center;
-    width: 70%;
+    width: 60%;
+    height: 30rem;
     margin-left: 15%;
-    border-radius: 5px 5px 0 0;
-    box-shadow: 5px 20px 50px #000;
+    margin-bottom: 60px;
+    border-radius: 7px;
+    box-shadow: 5px 20px 50px rgb(18, 24, 117);
 }
 
 .user__card {
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 20px;
-    padding-left: 20px;
+    justify-content: space-around;
+    font-size: 18px;
+    padding-top: 20px;
+    margin-bottom: -20px;
 }
 
 .user__card_img {
@@ -175,106 +139,88 @@ a {
 .post__content {
     display: flex;
     flex-direction: column;
+    align-items: center;
+
+    .content {
+        margin-top: -10px;
+        width: 99%;
+        text-align: left;
+        padding-top: 20px;
+        min-height: 100px;
+        background: #fff;
+        border-radius: 8px;
+        border-color: #fff;
+
+        &:focus-visible {
+            border-color: white
+        }
+    }
+
+    label {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 30px;
+    }
+
+    .btn__addImg {
+        padding: 20px;
+        border-radius: 7px;
+    }
 }
 
-.btn__submit {
+//.content_p {
+//    margin-top: -10px;
+//    width: 98.3%;
+//    text-align: left;
+//    padding-left: 10px;
+//    padding-top: 20px;
+//    min-height: 100px;
+//    background: #fff;
+//    border-radius: 5px;
+//}
+
+#addImg {
+    text-align: center;
+}
+
+img {
+    width: 60px;
+}
+
+button {
     width: 25%;
-    margin: 10px auto;
-    padding: 10px 0;
+    margin: 0px;
     justify-content: center;
-    display: block;
     color: #fff;
-    background: #573b8a;
+    background: #a338ff;
     font-size: 1em;
     font-weight: bold;
-    margin-top: 20px;
+    margin-top: 10px;
     outline: none;
     border: none;
-    border-radius: 0 0 5px 5px;
+    border-radius: 7px;
     transition: .2s ease-in;
     cursor: pointer;
 
     &:hover {
-        background: #6d44b8;
+        background: rgb(2, 227, 247);
     }
 }
 
-
-.btn__option {
+.post__option {
     display: flex;
-    margin-bottom: -10px;
+    flex-direction: row-reverse;
+    justify-content: center;
 
     button {
-        width: 25%;
-        margin: 10px auto;
-        justify-content: center;
-        display: block;
-        color: #fff;
-        background: #573b8a;
-        font-size: 1em;
-        font-weight: bold;
-        margin-top: 20px;
-        outline: none;
-        border: none;
-        border-radius: 5px 5px 0 0;
-        transition: .2s ease-in;
-        cursor: pointer;
-
-        &:hover {
-            background: #6d44b8;
-        }
+        height: 50px;
     }
-}
 
-//THREAD DES COMMENT//
-.comments {
-    border: 1px #6d44b8 solid;
-    background-color: rgba(211, 211, 211, 0.526);
-    text-align: center;
-    width: 70%;
-    margin-left: 15%;
-    border-radius: 0 0 5px 5px;
-    box-shadow: 5px 20px 50px #000;
-}
-
-.comment__content {
-    display: flex;
-    flex-direction: column;
-}
-
-//FOOTER//
-footer {
-    margin: 50px auto;
-    border-top: 1px white solid;
-    line-height: 20%;
-    color: white;
-}
-
-footer ul {
-    justify-content: center;
-    display: flex;
-    gap: 20%;
-    margin-right: 120px;
-    margin-left: -120px;
-    margin-bottom: 50px;
-
-    list-style: none;
-
-    li {
-        border-right: 2px solid goldenrod;
-        padding-right: 90px;
-        margin-right: -230px;
-        margin-left: 70px;
-
-        &:last-child {
-            border: none;
-            padding-left: 3px;
-        }
-
-        &:hover {
-            color: goldenrod;
-        }
+    .btn__showcomments {
+        padding: 20px;
+        border-radius: 7px 7px 0 0;
     }
+
 
 }
 </style>
