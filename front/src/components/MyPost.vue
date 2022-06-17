@@ -4,27 +4,31 @@
 
         <Header />
         <section>
-            <form class="post" @submit.prevent="createPost">
-                <div class="user__card">
-                    <p class="user__card_first"> {{ this.user.firstname }}</p>
-                    <p class="user__card_last">{{ this.user.lastname }}</p>
-                </div>
-                <div class="post__content">
-                    <textarea class="content" name="textarea" placeholder="Partagez quelque chose !" rows="10"
-                        v-model="dataPost.content"></textarea>
-                    <label for="addImg">Ajoutez une image ou un gif !</label>
-                    <input type="file" id="addImg" alt="illustration du post" @change="uploadFile">
-                    <button class="btn__addImg" type="click"> Ajoutez </button>
-                </div>
-                <div class="post__option">
+            <div class="createPost">
+                <form class="post" @submit.prevent="createPost">
+                    <div class="user__card">
+                        <p class="user__card_first"> {{ this.user.firstname }}</p>
+                        <p class="user__card_last">{{ this.user.lastname }}</p>
+                    </div>
+                    <div class="post__content">
+                        <textarea class="content" name="textarea" placeholder="Partagez quelque chose !" rows="10"
+                            v-model="dataPost.content"></textarea>
+                        <label for="addImg">Ajoutez une image ou un gif !</label>
+                        <input type="file" id="addImg" alt="illustration du post" @change="uploadFile">
 
-                    <button type="submit" class="btn__showcomments">Partagez !</button>
+                    </div>
+                    <div class="post__option">
 
-                </div>
-            </form>
-            <PostModel v-for="post in myPost" :key="post.id" :post="post" :myArrayComment="myArrayComment" :Btn="Btn"
-                :regular="regular" :shrink="shrink">
-            </PostModel>
+                        <button type="submit" class="btn__showcomments">Partagez !</button>
+
+                    </div>
+                </form>
+            </div>
+            <div class="myPost">
+                <PostModel v-for="post in myPost" :key="post.id" :post="post" @delete="deletePost(post.id)"
+                    :regular="regular" :shrink="shrink">
+                </PostModel>
+            </div>
         </section>
         <Footer />
     </body>
@@ -50,11 +54,11 @@ export default {
             regular: false,
             shrink: true,
             myPost: [],
-            myArrayComment: [],
+
             dataPost: {
                 id: null,
                 content: null,
-                img_url: null,
+
                 user_id: null
             },
             showComment: false,
@@ -66,6 +70,7 @@ export default {
             return this.$store.state.user
         }
     },
+
     methods: {
         uploadFile(e) {
             this.file = e.target.files[0]
@@ -80,7 +85,7 @@ export default {
             axios.post("http://localhost:3000/api/post/", formData)
                 .then((res) => {
                     this.myPost.push(res.data)
-                    console.log(res)
+                    this.sortPost()
                 })
                 .catch((error) => console.log(error))
         },
@@ -90,15 +95,21 @@ export default {
                     this.myPost = res.data
                     this.dataPost.user_id = this.user.id
                     this.dataPost.id = res.data.id
-                    console.log(res.data);
+                    this.sortPost()
                 })
                 .catch((error) => console.log(error))
         },
-        getComment() {
-            axios.get(`http://localhost:3000/api/comment/${this.dataPost.id}`)
-                .then((res) => {
-                    this.myArrayComment = res.data
-                }).catch((error) => console.log(error))
+
+        deletePost(post_id) {
+            this.myPost = this.myPost.filter((post) => {
+                return post.id !== post_id
+            })
+        },
+
+        sortPost() {
+            this.myPost.sort((a, b) => {
+                return new Date(a.date).valueOf() - new Date(b.date).valueOf()
+            }).reverse()
         }
     },
     mounted() {
@@ -109,6 +120,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.createPost {
+    display: flex;
+    justify-content: center;
+}
+
+.myPost {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .post {
     display: flex;
     flex-direction: column;
@@ -117,7 +139,7 @@ export default {
     text-align: center;
     width: 60%;
     height: 30rem;
-    margin-left: 15%;
+
     margin-bottom: 60px;
     border-radius: 7px;
     box-shadow: 5px 20px 50px rgb(18, 24, 117);
@@ -167,17 +189,6 @@ export default {
         border-radius: 7px;
     }
 }
-
-//.content_p {
-//    margin-top: -10px;
-//    width: 98.3%;
-//    text-align: left;
-//    padding-left: 10px;
-//    padding-top: 20px;
-//    min-height: 100px;
-//    background: #fff;
-//    border-radius: 5px;
-//}
 
 #addImg {
     text-align: center;

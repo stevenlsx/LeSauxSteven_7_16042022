@@ -42,6 +42,14 @@ class User {
     let sql = `
     DELETE FROM user WHERE id ='${id}'
     `;
+    let sqlRemovePost = `
+    DELETE FROM post WHERE user_id='${id}'
+    `;
+    let sqlRemoveComment = `
+    DELETE FROM comment WHERE user_id='${id}'
+    `;
+    await db.execute(sqlRemovePost);
+    await db.execute(sqlRemoveComment);
     const [user] = await db.execute(sql);
     return user;
   }

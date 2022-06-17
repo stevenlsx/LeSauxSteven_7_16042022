@@ -34,7 +34,10 @@ export default {
         })
         .catch((error) => console.log(error))
     }
-    else { this.loading = false }
+    else {
+      this.loading = false
+      this.$router.push("/")
+    }
   }
 }
 </script>

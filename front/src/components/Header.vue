@@ -27,8 +27,8 @@ header {
     display: grid;
     align-items: center;
     margin: 0 auto;
-    grid-template-columns: 1fr 1fr 2fr;
-    grid-template-areas: "logo . navbar ";
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas: "logo navbar ";
 }
 
 .header__logo {
@@ -62,12 +62,13 @@ a {
 }
 
 .router-link-active {
-
+    padding: 12px;
+    font-size: 1.1em;
     font-weight: bold;
     color: white;
     background-color: #a338ff;
     border: 2px solid #a338ff;
-    padding: 3px;
+
     border-radius: 5px;
     box-shadow: 4px 5px 12px rgb(18, 24, 117);
 

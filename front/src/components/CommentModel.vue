@@ -1,24 +1,24 @@
 <template>
-    <form class="comments" v-for="data in userData" :key="data.id">
-        <div class="user__card">
-            <img src="user__card_img" alt="photo de profil" />
-            <p class="user__card_first"> {{ data.firstname }}</p>
-            <p class="user__card_last">{{ data.lastname }}</p>
-            <p class="user__card_date">{{ commentData.date }}</p>
-        </div>
-        <div class="comment__content">
-            <p class="content_p">{{ commentData.content }}</p>
-            <label for="addImg">Ajoutez une image ou un gif !</label>
-            <input type="image" id="addImg" alt="illustration du comment" src="">
+    <div class="createComm">
+        <div class="comments">
+            <div class="user__card">
+                <p class="user__card_first"> {{ userData.firstname }}</p>
+                <p class="user__card_last">{{ userData.lastname }}</p>
+                <p class="user__card_date">{{ commentData.date }}</p>
+            </div>
+            <div class="comment__content">
+                <p class="content_p">{{ commentData.content }}</p>
+            </div>
+            <img :src="comment.img_url">
+            <div class="bttn">
+                <button @click="deleteComment" class="btn__del"
+                    v-if="user.id === commentData.user_id || user.role === 'admin'">
+                    Supprimer le commentaire
+                </button>
+            </div>
 
         </div>
-        <div class="btn__option">
-            <button class="btn__submit" type="submit"> Répondre !</button>
-            <!--<button type="submit" class="btn__modif">Modifier le post</button>-->
-            <!--<button type="submit" class="btn__showcomments">Afficher les réponses</button>-->
-            <!--<button type="submit" class="btn__del">Supprimer le post</button>-->
-        </div>
-    </form>
+    </div>
 </template>
 
 <script>
@@ -26,7 +26,7 @@ import axios from "axios"
 export default {
     name: "CommentModel",
     props: {
-        comment: Object
+        comment: Object,
     },
     data() {
         return {
@@ -34,9 +34,15 @@ export default {
                 id: null,
                 user_id: null,
                 content: null,
-                date: null
+                date: null,
+                img_url: null
             },
             userData: [],
+        }
+    },
+    computed: {
+        user() {
+            return this.$store.state.user
         }
     },
     methods: {
@@ -44,6 +50,19 @@ export default {
             axios.get(`http://localhost:3000/api/user/${this.commentData.user_id}`)
                 .then((res) => {
                     this.userData = res.data
+                })
+                .catch((error) => console.log(error))
+        },
+        getComment() {
+            axios.get(`http://localhost:3000/api/comment/${this.postData.id}`)
+                .then((res) => {
+                    this.arrayComment = res.data
+                }).catch((error) => console.log(error))
+        },
+        deleteComment() {
+            axios.delete(`http://localhost:3000/api/comment/${this.commentData.id}`)
+                .then(() => {
+                    this.$emit('deleteCom')
                 })
                 .catch((error) => console.log(error))
         }
@@ -56,93 +75,89 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.createComm {
+    width: 60%;
+}
+
 .comments {
-    margin-top: -59.8px;
+
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     background-color: rgba(211, 211, 211, 0.526);
-    text-align: center;
-    width: 60%;
+    //text-align: center;
+
     height: 30rem;
-    margin-left: 15%;
-    margin-bottom: 60px;
+    margin: 20px 0;
     border-radius: 7px;
     box-shadow: 5px 20px 50px rgb(18, 24, 117);
 }
+
 
 .user__card {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     font-size: 18px;
-    padding-top: 20px;
+    padding-top: 10px;
     margin-bottom: -20px;
 }
 
-.user__card_img {
-    padding-left: 20px;
-}
 
 .comment__content {
-    label {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 30px;
-    }
+    margin: 0;
+    padding: 0;
 }
 
-
 .content_p {
-    margin-top: -10px;
-    width: 98.3%;
+    width: 100%;
     text-align: left;
-    padding-left: 10px;
     padding-top: 20px;
-    min-height: 100px;
+    min-height: 120px;
     background: #fff;
     border-radius: 5px;
 }
 
-#addImg {
-    text-align: center;
+img {
+
+    border-radius: 3px;
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+
+    vertical-align: bottom;
+
 }
 
 
-
-.btn__option {
+.bttn {
     display: flex;
     flex-direction: row;
+    justify-content: space-around;
+
+}
+
+.btn__del {
+    padding: 20px
+}
+
+button {
+    width: 35%;
+    margin: 0px;
     justify-content: center;
+    color: #fff;
+    background: #a338ff;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 10px;
+    outline: none;
+    border: none;
+    border-radius: 5px 5px 0 0;
+    transition: .2s ease-in;
+    cursor: pointer;
 
-    .btn__submit {
-        padding: 20px;
-        border-radius: 7px 7px 0 0;
-    }
-
-    //.btn__showcomments {
-    //    padding: 20px;
-    //    border-radius: 0 7px 0 7px;
-    //}
-
-    button {
-        width: 25%;
-        margin: 0px;
-        justify-content: center;
-        color: #fff;
-        background: #a338ff;
-        font-size: 1em;
-        font-weight: bold;
-        margin-top: 10px;
-        outline: none;
-        border: none;
-        border-radius: 5px 5px 0 0;
-        transition: .2s ease-in;
-        cursor: pointer;
-
-        &:hover {
-            background: rgb(2, 227, 247);
-        }
+    &:hover {
+        background: rgb(2, 227, 247);
     }
 }
 </style>

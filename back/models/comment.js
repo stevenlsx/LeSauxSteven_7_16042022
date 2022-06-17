@@ -3,8 +3,8 @@ const db = require("../config/db");
 class Comment {
   async createComment(comment) {
     let sql = `
-          INSERT INTO comment (content, user_id, post_id)
-          VALUES('${comment.content}', '${comment.user_id}', '${comment.post_id}') 
+          INSERT INTO comment (content, user_id, post_id, img_url)
+          VALUES('${comment.content}', '${comment.user_id}', '${comment.post_id}', '${comment.img_url}') 
           `;
     const [newComment] = await db.execute(sql);
     return newComment;
@@ -12,6 +12,13 @@ class Comment {
   async getComment(id) {
     let sql = `
     SELECT * FROM comment WHERE post_id='${id}'
+    `;
+    const [newComment] = await db.execute(sql);
+    return newComment;
+  }
+  async getOneComment(id) {
+    let sql = `
+    SELECT * FROM comment WHERE id='${id}'
     `;
     const [newComment] = await db.execute(sql);
     return newComment;
@@ -30,10 +37,9 @@ class Comment {
     const [newComment] = await db.execute(sql);
     return newComment;
   }
-  async updateComment(commentReq, result) {
+  async deleteAllComment(post_id) {
     let sql = `
-    UPDATE comment SET content = '${commentReq.content}', 
-    img_url = '${commentReq.img_url}' WHERE id = '${result}'
+    DELETE FROM comment WHERE post_id='${post_id}'
     `;
     const [newComment] = await db.execute(sql);
     return newComment;

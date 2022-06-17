@@ -28,6 +28,10 @@ class Post {
     let sql = `
     DELETE FROM post WHERE id='${post}'
     `;
+    let sqlRemoveComment = `
+    DELETE FROM comment WHERE post_id='${post}'
+    `;
+    await db.execute(sqlRemoveComment);
     const [newPost] = await db.execute(sql);
     return newPost;
   }

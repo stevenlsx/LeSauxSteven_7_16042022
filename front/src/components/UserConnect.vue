@@ -35,11 +35,11 @@
 			</div>
 		</div>
 	</div>
-
 </template>
 
 <script>
 import axios from "axios"
+
 export default {
 	name: "UserConnection",
 	data() {
@@ -87,7 +87,10 @@ export default {
 			) {
 
 				axios.post("http://localhost:3000/api/user/signup", this.userSignup)
-					.then((res) => console.log(res))
+					.then((res) =>
+						console.log(res),
+						location.reload()
+					)
 					.catch((error) => console.log(error))
 			} else {
 				this.errorData = true;

@@ -1,4 +1,5 @@
 const Post = require("../models/post");
+const User = require("../models/user");
 const fs = require("fs");
 
 /*On prépare objet qui contient le corps de la requête et donne la valeur null à l'url de l'img.
@@ -55,10 +56,18 @@ exports.getAllPost = (req, res, next) => {
 
 exports.deletePost = (req, res, next) => {
   const postModel = new Post();
+  //const userModel = new User();
+  //console.log(userModel.getUser(req.auth));
+  //const [user] = userModel.getUser(req.auth);
+  //const [post] = postModel.getOnePost(req.params.id);
+  //console.log(post);
+  //console.log(user);
+  //if (user.id !== post.user_id && user.role !== "admin") {
+  //  res.status(403).json("Vous n'êtes pas autorisé à réaliser cette action");
+  //}
   postModel
     .findImg(req.params.id)
     .then((image) => {
-      //console.log(image);
       if (image !== null) {
         const filename = image[0].img_url.split("/images/")[1];
         fs.unlink(`images/${filename}`, (err) => {
@@ -76,9 +85,7 @@ exports.deletePost = (req, res, next) => {
               res.status(500).json(error);
             });
         });
-      }
-      if (image === null) {
-        console.log(image);
+      } else {
         postModel
           .deletePost(req.params.id)
           .then((response) => {
