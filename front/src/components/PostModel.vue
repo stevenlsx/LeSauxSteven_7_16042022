@@ -302,9 +302,21 @@ button {
     border-radius: 5px 5px 0 0;
     transition: .2s ease-in;
     cursor: pointer;
+    overflow: auto;
 
     &:hover {
         background: rgb(2, 227, 247);
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    button {
+        width: 30%;
+
+    }
+
+    .post {
+        height: 37rem
     }
 }
 </style>

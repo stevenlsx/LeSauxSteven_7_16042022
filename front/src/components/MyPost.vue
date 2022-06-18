@@ -224,6 +224,7 @@ button {
 
     button {
         height: 50px;
+        overflow: auto;
     }
 
     .btn__showcomments {
@@ -231,6 +232,16 @@ button {
         border-radius: 7px 7px 0 0;
     }
 
+    @media only screen and (max-width: 600px) {
+        button {
+            width: 30%;
+
+        }
+
+        .post {
+            height: 37rem
+        }
+    }
 
 }
 </style>

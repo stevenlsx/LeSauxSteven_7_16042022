@@ -56,15 +56,6 @@ exports.getAllPost = (req, res, next) => {
 
 exports.deletePost = (req, res, next) => {
   const postModel = new Post();
-  //const userModel = new User();
-  //console.log(userModel.getUser(req.auth));
-  //const [user] = userModel.getUser(req.auth);
-  //const [post] = postModel.getOnePost(req.params.id);
-  //console.log(post);
-  //console.log(user);
-  //if (user.id !== post.user_id && user.role !== "admin") {
-  //  res.status(403).json("Vous n'êtes pas autorisé à réaliser cette action");
-  //}
   postModel
     .findImg(req.params.id)
     .then((image) => {
@@ -74,11 +65,9 @@ exports.deletePost = (req, res, next) => {
           if (err) {
             console.log(err);
           }
-          console.log(filename);
           postModel
             .deletePost(req.params.id)
             .then((result) => {
-              //console.log(result);
               res.status(200).json(result);
             })
             .catch((error) => {
@@ -89,7 +78,6 @@ exports.deletePost = (req, res, next) => {
         postModel
           .deletePost(req.params.id)
           .then((response) => {
-            console.log(response);
             res.status(200).json(response);
           })
           .catch((error) => {

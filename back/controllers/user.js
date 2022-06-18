@@ -81,11 +81,6 @@ exports.getUser = (req, res, next) => {
 
 exports.deleteUser = (req, res, next) => {
   const userModel = new User();
-
-  //const [user] = userModel.getUser(req.auth);
-  //if (user.id !== req.params.id && user.role !== "admin") {
-  //  res.status(403).json("Vous n'êtes pas autorisé à réaliser cette action");
-  //}
   userModel
     .deleteUser(req.params.id)
     .then((result) => res.status(200).json(result))

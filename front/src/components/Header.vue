@@ -77,4 +77,15 @@ a {
         border: 2px solid rgb(2, 227, 247);
     }
 }
+
+@media only screen and (max-width: 870px) {
+    header {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .routing__list {
+        width: 120%;
+    }
+}
 </style>

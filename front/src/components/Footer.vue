@@ -53,7 +53,7 @@ footer ul {
     grid-template-columns: 1fr 1fr;
     text-align: center;
     list-style: none;
-    text-overflow: ellipsis;
+
 
     button {
         width: 50%;
@@ -65,6 +65,8 @@ footer ul {
         border: 1px solid #a338ff;
         border-radius: 5px;
         box-shadow: 4px 5px 12px rgb(18, 24, 117);
+        overflow: auto;
+
 
         &:hover {
             background-color: rgb(2, 227, 247);
@@ -82,5 +84,25 @@ footer ul {
             border: none;
         }
     }
+}
+
+@media only screen and (max-width: 600px) {
+    footer ul {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    button {
+        height: 70px;
+        margin-bottom: 20px;
+
+    }
+
+    li {
+        border-left: 2px solid goldenrod;
+        margin-top: 20px;
+    }
+
 }
 </style>

@@ -87,7 +87,7 @@ export default {
 			) {
 
 				axios.post("http://localhost:3000/api/user/signup", this.userSignup)
-					.then((res) =>
+					.then(() =>
 						location.reload()
 					)
 					.catch((error) => console.log(error))
