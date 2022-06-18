@@ -57,6 +57,7 @@
 <script>
 import CommentModel from "./CommentModel.vue"
 import axios from "axios"
+
 export default {
     name: "PostModel",
     components: {
@@ -113,10 +114,8 @@ export default {
         },
         //Recupère dans arrayUser les data user dont l'user.id correspondant à l'user_id du post. 
         getUser() {
-            console.log(this.postData);
             axios.get(`http://localhost:3000/api/user/${this.postData.user_id}`)
                 .then((res) => {
-                    console.log(res.data);
                     this.author = res.data
                 })
                 .catch((error) => console.log(error))
@@ -125,7 +124,8 @@ export default {
             axios.get(`http://localhost:3000/api/comment/${this.postData.id}`)
                 .then((res) => {
                     this.arrayComment = res.data
-                }).catch((error) => console.log(error))
+                })
+                .catch((error) => console.log(error))
         },
         createComment() {
             let formData = new FormData();
@@ -135,11 +135,9 @@ export default {
                 post_id: this.post.id,
                 content: this.dataComment.content
             }))
-            console.log(this.formData);
             axios.post("http://localhost:3000/api/comment/", formData)
                 .then((res) => {
                     this.arrayComment.push(res.data)
-                    console.log(res)
                 })
                 .catch((error) => console.log(error))
         },
@@ -158,7 +156,6 @@ export default {
     },
     mounted() {
         this.postData = this.post;
-        console.log(this.postData);
         this.getUser();
         this.getComment();
     },

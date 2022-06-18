@@ -25,7 +25,6 @@ export default {
                 .then(() => {
                     router.push("/")
                     localStorage.clear()
-                    console.log("deleted");
                 })
                 .catch((error) => console.log(error))
         },
@@ -83,13 +82,5 @@ footer ul {
             border: none;
         }
     }
-
-    @media screen and (max-width: 510px) {
-        button {
-            font-size: 10px;
-        }
-
-    }
-
 }
 </style>
