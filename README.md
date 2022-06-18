@@ -31,4 +31,4 @@ Vérifiez bien que le backend communique via le port :3000
 Accèder à l'application
 Lancez la via http://localhost:8080/
 Un compte admin est déjà disponible, connectez-vous avec l'identifiant admin@account.fr le mot de passe Admin1
-ENJOY ! 🙂
+
