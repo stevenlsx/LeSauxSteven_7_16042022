@@ -1,5 +1,5 @@
 const Post = require("../models/post");
-const User = require("../models/user");
+
 const fs = require("fs");
 
 /*On prépare objet qui contient le corps de la requête et donne la valeur null à l'url de l'img.

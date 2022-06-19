@@ -8,11 +8,6 @@ export default createStore({
     token: null,
   },
   mutations: {
-    /**
-     *
-     * @param {Object} state
-     * @param {Object} data
-     */
     userData(state, data) {
       state.user = data.user;
       state.token = data.token;
